@@ -40,7 +40,7 @@
             color: #555;
         }
 
-        input[type="number"] {
+        input[type="number"], input[type="month"] {
             width: 100%;
             padding: 10px 12px;
             margin-top: 6px;
@@ -50,7 +50,7 @@
             font-size: 14px;
         }
 
-        input[type="number"]:focus {
+        input[type="number"]:focus, input[type="month"]:focus {
             border-color: #007bff;
             box-shadow: 0 0 5px rgba(0,123,255,0.4);
             outline: none;
@@ -98,18 +98,27 @@
 <body>
     <div class="container">
         <h2>Tính Lương Thực Nhận</h2>
+
+        <label>Chọn tháng:
+            <input type="month" id="monthPicker">
+        </label>
+
         <label>Lương cơ bản (VND):
             <input type="number" id="basicSalary" value="5000000">
         </label>
+
         <label>Ngày làm việc trong tháng:
-            <input type="number" id="workDays" value="22" readonly>
+            <input type="number" id="workDays" readonly>
         </label>
+
         <label>Số ngày nghỉ:
             <input type="number" id="leaveDays" value="0">
         </label>
+
         <label>Tỉ lệ BH (%):
             <input type="number" id="insurance" value="10.5">
         </label>
+
         <button onclick="calculateSalary()">Tính lương</button>
         <div class="result" id="result" style="display:none;"></div>
     </div>
@@ -127,15 +136,33 @@
             return workDays;
         }
 
-        // Khi load trang, tự động set value cho input workDays
-        window.onload = function() {
-            const today = new Date();
-            const year = today.getFullYear();
-            const month = today.getMonth(); // 0-11
-            const workDays = calculateWorkDays(year, month);
+        // Hàm cập nhật ngày làm việc khi chọn tháng
+        function updateWorkDays() {
+            const monthInput = document.getElementById('monthPicker').value;
+            if (!monthInput) return;
+
+            const [year, month] = monthInput.split('-').map(Number);
+            const workDays = calculateWorkDays(year, month - 1);
             document.getElementById('workDays').value = workDays;
         }
 
+        // Khi load trang, set tháng hiện tại và tính ngày làm việc
+        window.onload = function() {
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = today.getMonth() + 1;
+
+            const formattedMonth = `${year}-${month.toString().padStart(2, '0')}`;
+            document.getElementById('monthPicker').value = formattedMonth;
+            updateWorkDays();
+        }
+
+        // Gắn sự kiện onchange cho monthPicker
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('monthPicker').addEventListener('change', updateWorkDays);
+        });
+
+        // Hàm tính lương
         function calculateSalary() {
             const basicSalary = parseFloat(document.getElementById('basicSalary').value);
             const workDays = parseFloat(document.getElementById('workDays').value);
