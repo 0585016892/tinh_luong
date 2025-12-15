@@ -46,14 +46,6 @@
             margin-top: 6px;
             border-radius: 8px;
             border: 1px solid #ccc;
-            transition: all 0.2s;
-            font-size: 14px;
-        }
-
-        input[type="number"]:focus, input[type="month"]:focus {
-            border-color: #007bff;
-            box-shadow: 0 0 5px rgba(0,123,255,0.4);
-            outline: none;
         }
 
         button {
@@ -67,12 +59,6 @@
             font-size: 16px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        button:hover {
-            background-color: #0056b3;
-            transform: translateY(-2px);
         }
 
         .result {
@@ -83,108 +69,95 @@
             border-radius: 10px;
             font-weight: 500;
             color: #007b7f;
-            line-height: 1.5;
             text-align: center;
-        }
-
-        @media(max-width: 450px){
-            .container {
-                width: 90%;
-                padding: 25px;
-            }
+            line-height: 1.6;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h2>Tính Lương Thực Nhận</h2>
+<div class="container">
+    <h2>Tính Lương Thực Nhận</h2>
 
-        <label>Chọn tháng:
-            <input type="month" id="monthPicker">
-        </label>
+    <label>Chọn tháng:
+        <input type="month" id="monthPicker">
+    </label>
 
-        <label>Lương cơ bản (VND):
-            <input type="number" id="basicSalary" value="5000000">
-        </label>
+    <label>Lương cơ bản (VND):
+        <input type="number" id="basicSalary" value="5000000">
+    </label>
 
-        <label>Ngày làm việc trong tháng:
-            <input type="number" id="workDays" readonly>
-        </label>
+    <label>Ngày làm việc trong tháng:
+        <input type="number" id="workDays" readonly>
+    </label>
 
-        <label>Số ngày nghỉ:
-            <input type="number" id="leaveDays" value="0">
-        </label>
+    <label>Số ngày nghỉ:
+        <input type="number" id="leaveDays" value="0">
+    </label>
 
-        <label>Tỉ lệ BH (%):
-            <input type="number" id="insurance" value="10.5">
-        </label>
+    <label>Tỉ lệ BH (%):
+        <input type="number" id="insurance" value="10.5">
+    </label>
 
-        <button onclick="calculateSalary()">Tính lương</button>
-        <div class="result" id="result" style="display:none;"></div>
-    </div>
+    <button onclick="calculateSalary()">Tính lương</button>
+    <div class="result" id="result" style="display:none;"></div>
+</div>
 
-    <script>
-        // Hàm tính số ngày làm việc từ thứ 2 đến thứ 6 trong tháng
-        function calculateWorkDays(year, month) {
-            let date = new Date(year, month, 1);
-            let workDays = 0;
-            while (date.getMonth() === month) {
-                const day = date.getDay(); // 0=CN,1=T2,...,6=T7
-                if (day >= 1 && day <= 5) workDays++;
-                date.setDate(date.getDate() + 1);
-            }
-            return workDays;
+<script>
+    function calculateWorkDays(year, month) {
+        let date = new Date(year, month, 1);
+        let count = 0;
+        while (date.getMonth() === month) {
+            const day = date.getDay();
+            if (day >= 1 && day <= 5) count++;
+            date.setDate(date.getDate() + 1);
+        }
+        return count;
+    }
+
+    function updateWorkDays() {
+        const value = document.getElementById('monthPicker').value;
+        if (!value) return;
+        const [year, month] = value.split('-').map(Number);
+        document.getElementById('workDays').value = calculateWorkDays(year, month - 1);
+    }
+
+    window.onload = () => {
+        const today = new Date();
+        document.getElementById('monthPicker').value =
+            `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}`;
+        updateWorkDays();
+    };
+
+    document.getElementById('monthPicker').addEventListener('change', updateWorkDays);
+
+    function calculateSalary() {
+        const basicSalary = +document.getElementById('basicSalary').value;
+        const workDays = +document.getElementById('workDays').value;
+        const leaveDays = +document.getElementById('leaveDays').value;
+        const insuranceRate = +document.getElementById('insurance').value;
+
+        const actualDays = workDays - leaveDays;
+        if (actualDays < 0) {
+            alert("Số ngày nghỉ không hợp lệ!");
+            return;
         }
 
-        // Hàm cập nhật ngày làm việc khi chọn tháng
-        function updateWorkDays() {
-            const monthInput = document.getElementById('monthPicker').value;
-            if (!monthInput) return;
+        const dailySalary = basicSalary / workDays;
+        const salaryByWorkDays = dailySalary * actualDays;
 
-            const [year, month] = monthInput.split('-').map(Number);
-            const workDays = calculateWorkDays(year, month - 1);
-            document.getElementById('workDays').value = workDays;
-        }
+        // BH trừ theo lương đủ tháng
+        const insuranceMoney = basicSalary * insuranceRate / 100;
 
-        // Khi load trang, set tháng hiện tại và tính ngày làm việc
-        window.onload = function() {
-            const today = new Date();
-            const year = today.getFullYear();
-            const month = today.getMonth() + 1;
+        const netSalary = salaryByWorkDays - insuranceMoney;
 
-            const formattedMonth = `${year}-${month.toString().padStart(2, '0')}`;
-            document.getElementById('monthPicker').value = formattedMonth;
-            updateWorkDays();
-        }
-
-        // Gắn sự kiện onchange cho monthPicker
-        document.addEventListener('DOMContentLoaded', () => {
-            document.getElementById('monthPicker').addEventListener('change', updateWorkDays);
-        });
-
-        // Hàm tính lương
-        function calculateSalary() {
-            const basicSalary = parseFloat(document.getElementById('basicSalary').value);
-            const workDays = parseFloat(document.getElementById('workDays').value);
-            const leaveDays = parseFloat(document.getElementById('leaveDays').value);
-            const insuranceRate = parseFloat(document.getElementById('insurance').value);
-
-            if (isNaN(basicSalary) || isNaN(workDays) || isNaN(leaveDays) || isNaN(insuranceRate)) {
-                alert("Vui lòng nhập đúng các giá trị số.");
-                return;
-            }
-
-            const dailySalary = basicSalary / workDays;
-            const salaryBeforeInsurance = basicSalary - (dailySalary * leaveDays);
-            const salaryAfterInsurance = salaryBeforeInsurance - (salaryBeforeInsurance * insuranceRate / 100);
-
-            const resultDiv = document.getElementById('result');
-            resultDiv.style.display = 'block';
-            resultDiv.innerHTML = `
-                <strong>Lương trước BH:</strong> ${salaryBeforeInsurance.toLocaleString()} VND<br>
-                <strong>Lương thực nhận:</strong> ${salaryAfterInsurance.toLocaleString()} VND
-            `;
-        }
-    </script>
+        document.getElementById('result').style.display = 'block';
+        document.getElementById('result').innerHTML = `
+            <strong>Ngày công thực tế:</strong> ${actualDays} ngày<br>
+            <strong>Lương theo công:</strong> ${salaryByWorkDays.toLocaleString()} VND<br>
+            <strong>BH (trừ đủ tháng):</strong> ${insuranceMoney.toLocaleString()} VND<br>
+            <strong>Lương thực nhận:</strong> ${netSalary.toLocaleString()} VND
+        `;
+    }
+</script>
 </body>
 </html>
