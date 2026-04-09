@@ -3,161 +3,287 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tính Lương Thực Nhận</title>
+    <title>Tính Lương Edulive</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
+        :root {
+            --bg-color: #eef2f7;
+            --card-bg: #ffffff;
+            --primary: #4361ee;
+            --secondary: #3f37c9;
+            --accent: #4cc9f0;
+            --text: #2b2d42;
+            --success: #06d6a0;
+            --danger: #ef476f;
+        }
+
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
 
         body {
-            font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #74ebd5, #ACB6E5);
+            font-family: 'Montserrat', sans-serif;
+            background: var(--bg-color);
+            margin: 0;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            margin: 0;
+            min-height: 100vh;
+            padding: 15px; /* Khoảng cách an toàn cho mobile */
         }
 
-        .container {
-            background-color: #ffffffcc;
-            backdrop-filter: blur(10px);
-            padding: 30px 35px;
-            border-radius: 15px;
-            box-shadow: 0 15px 25px rgba(0,0,0,0.2);
-            width: 400px;
+        .wrapper {
+            background: var(--card-bg);
+            width: 100%;
+            max-width: 800px; /* Độ rộng tối đa cho màn hình lớn */
+            border-radius: 30px;
+            box-shadow: 20px 20px 60px #d1d9e6, -20px -20px 60px #ffffff;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Chia cột khi màn hình lớn */
+        @media (min-width: 768px) {
+            .wrapper {
+                flex-direction: row;
+                min-height: 500px;
+            }
+        }
+
+        .input-side {
+            padding: 30px;
+            flex: 1.2;
+        }
+
+        .result-side {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            padding: 30px;
+            flex: 0.8;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            transition: all 0.5s ease;
         }
 
         h2 {
-            text-align: center;
-            margin-bottom: 25px;
-            color: #333;
-            font-weight: 600;
+            margin: 0 0 25px 0;
+            font-size: 1.5rem;
+            color: var(--text);
+            font-weight: 700;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr; /* Mặc định 1 cột cho mobile */
+            gap: 15px;
+        }
+
+        /* Chỉnh 2 cột khi màn hình từ tablet trở lên */
+        @media (min-width: 480px) {
+            .form-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            .full-row { grid-column: span 2; }
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
         }
 
         label {
-            display: block;
-            margin-top: 15px;
-            font-weight: 500;
-            color: #555;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: #8d99ae;
         }
 
-        input[type="number"], input[type="month"] {
-            width: 100%;
-            padding: 10px 12px;
-            margin-top: 6px;
-            border-radius: 8px;
-            border: 1px solid #ccc;
+        input {
+            padding: 12px;
+            border: 2px solid #edf2f4;
+            border-radius: 12px;
+            font-size: 1rem;
+            outline: none;
+            transition: 0.3s;
+            font-family: inherit;
+        }
+
+        input:focus {
+            border-color: var(--primary);
+        }
+
+        input[readonly] {
+            background: #f8f9fa;
+            border-style: dashed;
         }
 
         button {
-            margin-top: 20px;
-            width: 100%;
-            padding: 12px;
-            background-color: #007bff;
-            color: #fff;
-            border: none;
-            border-radius: 10px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-        }
-
-        .result {
             margin-top: 25px;
             padding: 15px;
-            background-color: #e0f7fa;
-            border-left: 5px solid #00acc1;
-            border-radius: 10px;
-            font-weight: 500;
-            color: #007b7f;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 10px 20px rgba(67, 97, 238, 0.3);
+            transition: 0.3s;
+        }
+
+        button:hover {
+            transform: translateY(-3px);
+            background: var(--secondary);
+        }
+
+        /* Phần hiển thị kết quả */
+        .res-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 10px;
+        }
+
+        .res-label { opacity: 0.8; font-size: 0.9rem; }
+        .res-value { font-weight: 600; }
+
+        .total-card {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 20px;
             text-align: center;
-            line-height: 1.6;
+            margin-top: 20px;
+            backdrop-filter: blur(5px);
+        }
+
+        .total-amount {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-top: 5px;
+            display: block;
+        }
+
+        #resultContainer {
+            opacity: 0;
+            transform: scale(0.9);
+            transition: 0.5s;
+        }
+
+        #resultContainer.active {
+            opacity: 1;
+            transform: scale(1);
         }
     </style>
 </head>
 <body>
-<div class="container">
-    <h2>Tính Lương Thực Nhận</h2>
 
-    <label>Chọn tháng:
-        <input type="month" id="monthPicker">
-    </label>
+<div class="wrapper">
+    <div class="input-side">
+        <h2>Tính lương</h2>
+        <div class="form-grid">
+            <div class="input-group full-row">
+                <label>Tháng làm việc</label>
+                <input type="month" id="monthPicker">
+            </div>
+            <div class="input-group">
+                <label>Lương hợp đồng</label>
+                <input type="number" id="contractSalary" value="5700000">
+            </div>
+            <div class="input-group">
+                <label>Lương thực tế</label>
+                <input type="number" id="realSalary" value="7000000">
+            </div>
+            <div class="input-group">
+                <label>Ngày chuẩn</label>
+                <input type="number" id="workDays" readonly>
+            </div>
+            <div class="input-group">
+                <label>Ngày nghỉ</label>
+                <input type="number" id="leaveDays" value="0">
+            </div>
+        </div>
+        <button onclick="calculateSalary()">TÍNH LƯƠNG NGAY</button>
+    </div>
 
-    <label>Lương cơ bản (VND):
-        <input type="number" id="basicSalary" value="5000000">
-    </label>
-
-    <label>Ngày làm việc trong tháng:
-        <input type="number" id="workDays" readonly>
-    </label>
-
-    <label>Số ngày nghỉ:
-        <input type="number" id="leaveDays" value="0">
-    </label>
-
-    <label>Tỉ lệ BH (%):
-        <input type="number" id="insurance" value="10.5">
-    </label>
-
-    <button onclick="calculateSalary()">Tính lương</button>
-    <div class="result" id="result" style="display:none;"></div>
+    <div class="result-side">
+        <div id="resultContainer">
+            <h3 style="margin-top: 0;">Tóm tắt lương</h3>
+            <div class="res-row">
+                <span class="res-label">Công thực tế</span>
+                <span class="res-value" id="resDays">0/0</span>
+            </div>
+            <div class="res-row">
+                <span class="res-label">Lương trước thuế</span>
+                <span class="res-value" id="resGross">0</span>
+            </div>
+            <div class="res-row">
+                <span class="res-label">Bảo hiểm (10.5%)</span>
+                <span class="res-value" id="resIns">0</span>
+            </div>
+            
+            <div class="total-card">
+                <span style="font-size: 0.8rem; letter-spacing: 2px;">THỰC NHẬN</span>
+                <span class="total-amount" id="resNet">0</span>
+                <span style="font-size: 0.8rem;">VND</span>
+            </div>
+        </div>
+    </div>
 </div>
 
 <script>
-    function calculateWorkDays(year, month) {
-        let date = new Date(year, month, 1);
-        let count = 0;
-        while (date.getMonth() === month) {
-            const day = date.getDay();
-            if (day >= 1 && day <= 5) count++;
-            date.setDate(date.getDate() + 1);
+    const insRate = 10.5;
+
+    function getWorkDays(y, m) {
+        let d = new Date(y, m, 1), count = 0;
+        while (d.getMonth() === m) {
+            if (d.getDay() >= 1 && d.getDay() <= 5) count++;
+            d.setDate(d.getDate() + 1);
         }
         return count;
     }
 
-    function updateWorkDays() {
-        const value = document.getElementById('monthPicker').value;
-        if (!value) return;
-        const [year, month] = value.split('-').map(Number);
-        document.getElementById('workDays').value = calculateWorkDays(year, month - 1);
+    function updateDays() {
+        const val = document.getElementById("monthPicker").value;
+        if(!val) return;
+        const [y, m] = val.split("-").map(Number);
+        document.getElementById("workDays").value = getWorkDays(y, m-1);
     }
 
     window.onload = () => {
-        const today = new Date();
-        document.getElementById('monthPicker').value =
-            `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}`;
-        updateWorkDays();
+        const n = new Date();
+        document.getElementById("monthPicker").value = `${n.getFullYear()}-${String(n.getMonth()+1).padStart(2,'0')}`;
+        updateDays();
     };
 
-    document.getElementById('monthPicker').addEventListener('change', updateWorkDays);
+    document.getElementById("monthPicker").onchange = updateDays;
 
     function calculateSalary() {
-        const basicSalary = +document.getElementById('basicSalary').value;
-        const workDays = +document.getElementById('workDays').value;
-        const leaveDays = +document.getElementById('leaveDays').value;
-        const insuranceRate = +document.getElementById('insurance').value;
+        const contract = +document.getElementById("contractSalary").value;
+        const real = +document.getElementById("realSalary").value;
+        const totalD = +document.getElementById("workDays").value;
+        const off = +document.getElementById("leaveDays").value;
 
-        const actualDays = workDays - leaveDays;
-        if (actualDays < 0) {
-            alert("Số ngày nghỉ không hợp lệ!");
-            return;
-        }
+        if(off > totalD) { alert("Dữ liệu ngày nghỉ sai!"); return; }
 
-        const dailySalary = basicSalary / workDays;
-        const salaryByWorkDays = dailySalary * actualDays;
+        const actual = totalD - off;
+        const salaryPerDay = real / totalD;
+        const gross = salaryPerDay * actual;
+        const ins = contract * (insRate / 100);
+        const net = gross - ins;
 
-        // BH trừ theo lương đủ tháng
-        const insuranceMoney = basicSalary * insuranceRate / 100;
-
-        const netSalary = salaryByWorkDays - insuranceMoney;
-
-        document.getElementById('result').style.display = 'block';
-        document.getElementById('result').innerHTML = `
-            <strong>Ngày công thực tế:</strong> ${actualDays} ngày<br>
-            <strong>Lương theo công:</strong> ${salaryByWorkDays.toLocaleString()} VND<br>
-            <strong>BH (trừ đủ tháng):</strong> ${insuranceMoney.toLocaleString()} VND<br>
-            <strong>Lương thực nhận:</strong> ${netSalary.toLocaleString()} VND
-        `;
+        // Cập nhật giao diện
+        document.getElementById("resDays").innerText = `${actual}/${totalD} ngày`;
+        document.getElementById("resGross").innerText = Math.round(gross).toLocaleString();
+        document.getElementById("resIns").innerText = "-" + Math.round(ins).toLocaleString();
+        document.getElementById("resNet").innerText = Math.round(net).toLocaleString();
+        
+        // Hiệu ứng hiện kết quả
+        document.getElementById("resultContainer").classList.add("active");
     }
 </script>
+
 </body>
 </html>
