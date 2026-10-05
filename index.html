@@ -3,21 +3,29 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
     <title>Tính Lương Edulive</title>
+
     <link
-      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
+
     <style>
       :root {
-        --bg-color: #eef2f7;
-        --card-bg: #ffffff;
-        --primary: #4361ee;
-        --secondary: #3f37c9;
-        --accent: #4cc9f0;
-        --text: #2b2d42;
-        --success: #06d6a0;
-        --danger: #ef476f;
+        --primary: #6366f1;
+        --primary-dark: #4f46e5;
+        --purple: #8b5cf6;
+        --pink: #ec4899;
+        --cyan: #06b6d4;
+        --green: #10b981;
+        --orange: #f59e0b;
+        --red: #ef4444;
+
+        --bg: #f4f7ff;
+        --text: #1e293b;
+        --muted: #94a3b8;
+        --white: #ffffff;
       }
 
       * {
@@ -26,221 +34,826 @@
       }
 
       body {
-        font-family: "Montserrat", sans-serif;
-        background: var(--bg-color);
         margin: 0;
+        min-height: 100vh;
+        font-family: "Montserrat", sans-serif;
+        color: var(--text);
+        background:
+          radial-gradient(
+            circle at 10% 10%,
+            rgba(99, 102, 241, 0.15),
+            transparent 25%
+          ),
+          radial-gradient(
+            circle at 90% 15%,
+            rgba(236, 72, 153, 0.12),
+            transparent 25%
+          ),
+          radial-gradient(
+            circle at 50% 100%,
+            rgba(6, 182, 212, 0.12),
+            transparent 30%
+          ),
+          #f5f7ff;
+
         display: flex;
         justify-content: center;
         align-items: center;
-        min-height: 100vh;
-        padding: 15px; /* Khoảng cách an toàn cho mobile */
+
+        padding: 25px;
+        overflow-x: hidden;
       }
 
-      .wrapper {
-        background: var(--card-bg);
-        width: 100%;
-        max-width: 800px; /* Độ rộng tối đa cho màn hình lớn */
-        border-radius: 30px;
-        box-shadow:
-          20px 20px 60px #d1d9e6,
-          -20px -20px 60px #ffffff;
-        overflow: hidden;
-        display: flex;
-        flex-direction: column;
+      /* =========================
+       FLOATING BACKGROUND
+    ========================= */
+
+      .bubble {
+        position: fixed;
+        border-radius: 50%;
+        pointer-events: none;
+        filter: blur(1px);
+        opacity: 0.45;
+        animation: float 7s ease-in-out infinite;
+        z-index: -1;
       }
 
-      /* Chia cột khi màn hình lớn */
-      @media (min-width: 768px) {
-        .wrapper {
-          flex-direction: row;
-          min-height: 500px;
+      .bubble-1 {
+        width: 80px;
+        height: 80px;
+        background: #c4b5fd;
+        top: 10%;
+        left: 5%;
+      }
+
+      .bubble-2 {
+        width: 120px;
+        height: 120px;
+        background: #fbcfe8;
+        bottom: 8%;
+        right: 7%;
+        animation-delay: 1.5s;
+      }
+
+      .bubble-3 {
+        width: 50px;
+        height: 50px;
+        background: #a5f3fc;
+        top: 70%;
+        left: 15%;
+        animation-delay: 3s;
+      }
+
+      @keyframes float {
+        0%,
+        100% {
+          transform: translateY(0) rotate(0deg);
+        }
+
+        50% {
+          transform: translateY(-25px) rotate(10deg);
         }
       }
 
+      /* =========================
+       MAIN CARD
+    ========================= */
+
+      .wrapper {
+        width: 100%;
+        max-width: 1000px;
+
+        display: grid;
+        grid-template-columns: 1.05fr 0.95fr;
+
+        background: rgba(255, 255, 255, 0.78);
+        backdrop-filter: blur(20px);
+
+        border: 1px solid rgba(255, 255, 255, 0.8);
+        border-radius: 32px;
+
+        box-shadow:
+          0 30px 80px rgba(70, 80, 150, 0.15),
+          0 10px 30px rgba(70, 80, 150, 0.08);
+
+        overflow: hidden;
+
+        animation: appear 0.7s ease;
+      }
+
+      @keyframes appear {
+        from {
+          opacity: 0;
+          transform: translateY(30px) scale(0.97);
+        }
+
+        to {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+        }
+      }
+
+      /* =========================
+       INPUT SIDE
+    ========================= */
+
       .input-side {
-        padding: 30px;
-        flex: 1.2;
+        padding: 42px;
+        position: relative;
       }
 
-      .result-side {
-        background: linear-gradient(135deg, var(--primary), var(--secondary));
-        padding: 30px;
-        flex: 0.8;
-        color: white;
+      .logo {
+        width: 55px;
+        height: 55px;
+
+        border-radius: 18px;
+
         display: flex;
-        flex-direction: column;
+        align-items: center;
         justify-content: center;
-        transition: all 0.5s ease;
+
+        font-size: 26px;
+
+        background: linear-gradient(135deg, var(--primary), var(--purple));
+
+        color: white;
+
+        box-shadow: 0 12px 25px rgba(99, 102, 241, 0.3);
+
+        margin-bottom: 20px;
+
+        animation: wiggle 3s ease-in-out infinite;
       }
 
-      h2 {
-        margin: 0 0 25px 0;
-        font-size: 1.5rem;
-        color: var(--text);
-        font-weight: 700;
+      @keyframes wiggle {
+        0%,
+        85%,
+        100% {
+          transform: rotate(0deg);
+        }
+
+        90% {
+          transform: rotate(-8deg);
+        }
+
+        95% {
+          transform: rotate(8deg);
+        }
       }
+
+      .title {
+        margin: 0;
+        font-size: 29px;
+        font-weight: 800;
+        letter-spacing: -1px;
+      }
+
+      .subtitle {
+        color: var(--muted);
+        margin: 8px 0 30px;
+        font-size: 13px;
+        line-height: 1.6;
+      }
+
+      /* =========================
+       FORM
+    ========================= */
 
       .form-grid {
         display: grid;
-        grid-template-columns: 1fr; /* Mặc định 1 cột cho mobile */
-        gap: 15px;
-      }
-
-      /* Chỉnh 2 cột khi màn hình từ tablet trở lên */
-      @media (min-width: 480px) {
-        .form-grid {
-          grid-template-columns: 1fr 1fr;
-        }
-        .full-row {
-          grid-column: span 2;
-        }
+        grid-template-columns: 1fr 1fr;
+        gap: 17px;
       }
 
       .input-group {
-        display: flex;
-        flex-direction: column;
+        position: relative;
+      }
+
+      .full-row {
+        grid-column: span 2;
       }
 
       label {
-        font-size: 0.8rem;
-        font-weight: 600;
-        margin-bottom: 6px;
-        color: #8d99ae;
+        display: block;
+        font-size: 11px;
+        font-weight: 700;
+        color: #64748b;
+        margin-bottom: 7px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .input-wrapper {
+        position: relative;
+      }
+
+      .input-icon {
+        position: absolute;
+        left: 14px;
+        top: 50%;
+        transform: translateY(-50%);
+
+        font-size: 18px;
+        pointer-events: none;
       }
 
       input {
-        padding: 12px;
-        border: 2px solid #edf2f4;
-        border-radius: 12px;
-        font-size: 1rem;
-        outline: none;
-        transition: 0.3s;
+        width: 100%;
+        height: 50px;
+
+        border: 2px solid #edf0f7;
+        background: #f9fafc;
+
+        border-radius: 15px;
+
+        padding: 0 15px 0 45px;
+
         font-family: inherit;
+        font-size: 14px;
+        font-weight: 600;
+
+        outline: none;
+
+        color: var(--text);
+
+        transition: 0.25s;
+      }
+
+      input:hover {
+        border-color: #dbe0f0;
+        background: white;
       }
 
       input:focus {
         border-color: var(--primary);
+        background: white;
+
+        box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+
+        transform: translateY(-1px);
       }
 
       input[readonly] {
-        background: #f8f9fa;
-        border-style: dashed;
+        background: #f1f5f9;
+        color: #64748b;
+        cursor: not-allowed;
       }
 
-      button {
+      /* =========================
+       BUTTON
+    ========================= */
+
+      .calculate-btn {
+        width: 100%;
+        border: 0;
+
         margin-top: 25px;
-        padding: 15px;
-        background: var(--primary);
+
+        height: 56px;
+
+        border-radius: 17px;
+
+        background: linear-gradient(135deg, var(--primary), var(--purple));
+
         color: white;
-        border: none;
-        border-radius: 15px;
-        font-weight: 700;
+
+        font-family: inherit;
+        font-size: 14px;
+        font-weight: 800;
+
         cursor: pointer;
-        box-shadow: 0 10px 20px rgba(67, 97, 238, 0.3);
-        transition: 0.3s;
+
+        position: relative;
+        overflow: hidden;
+
+        box-shadow: 0 15px 30px rgba(99, 102, 241, 0.3);
+
+        transition: 0.25s;
       }
 
-      button:hover {
+      .calculate-btn::before {
+        content: "";
+
+        position: absolute;
+
+        width: 100px;
+        height: 100px;
+
+        background: rgba(255, 255, 255, 0.2);
+
+        border-radius: 50%;
+
+        top: -40px;
+        left: -80px;
+
+        transition: 0.5s;
+      }
+
+      .calculate-btn:hover {
         transform: translateY(-3px);
-        background: var(--secondary);
+
+        box-shadow: 0 20px 35px rgba(99, 102, 241, 0.4);
       }
 
-      /* Phần hiển thị kết quả */
-      .res-row {
+      .calculate-btn:hover::before {
+        left: 110%;
+      }
+
+      .calculate-btn:active {
+        transform: scale(0.97);
+      }
+
+      /* =========================
+       RESULT SIDE
+    ========================= */
+
+      .result-side {
+        position: relative;
+
+        padding: 42px;
+
+        color: white;
+
+        background:
+          radial-gradient(
+            circle at 90% 10%,
+            rgba(255, 255, 255, 0.18),
+            transparent 25%
+          ),
+          linear-gradient(145deg, #6366f1, #7c3aed 55%, #9333ea);
+
+        overflow: hidden;
+      }
+
+      .result-side::before,
+      .result-side::after {
+        content: "";
+
+        position: absolute;
+
+        border-radius: 50%;
+
+        background: rgba(255, 255, 255, 0.08);
+      }
+
+      .result-side::before {
+        width: 250px;
+        height: 250px;
+
+        right: -100px;
+        top: -90px;
+      }
+
+      .result-side::after {
+        width: 180px;
+        height: 180px;
+
+        left: -80px;
+        bottom: -80px;
+      }
+
+      .result-content {
+        position: relative;
+        z-index: 2;
+      }
+
+      .result-header {
         display: flex;
         justify-content: space-between;
-        margin-bottom: 15px;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        padding-bottom: 10px;
+        align-items: center;
+
+        margin-bottom: 28px;
+      }
+
+      .result-title {
+        margin: 0;
+        font-size: 20px;
+        font-weight: 800;
+      }
+
+      .happy {
+        font-size: 30px;
+        animation: bounce 2s infinite;
+      }
+
+      @keyframes bounce {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+
+        50% {
+          transform: translateY(-8px);
+        }
+      }
+
+      /* =========================
+       RESULT ROW
+    ========================= */
+
+      .res-row {
+        display: flex;
+        align-items: center;
+
+        gap: 13px;
+
+        padding: 14px 0;
+
+        border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+      }
+
+      .res-icon {
+        width: 38px;
+        height: 38px;
+
+        flex-shrink: 0;
+
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        background: rgba(255, 255, 255, 0.13);
+
+        border-radius: 12px;
+
+        font-size: 17px;
+      }
+
+      .res-info {
+        flex: 1;
       }
 
       .res-label {
-        opacity: 0.8;
-        font-size: 0.9rem;
-      }
-      .res-value {
-        font-weight: 600;
+        display: block;
+
+        font-size: 10px;
+
+        opacity: 0.7;
+
+        text-transform: uppercase;
+
+        letter-spacing: 0.5px;
       }
 
-      .total-card {
+      .res-value {
+        display: block;
+
+        margin-top: 3px;
+
+        font-size: 15px;
+
+        font-weight: 700;
+      }
+
+      /* =========================
+       WORK PROGRESS
+    ========================= */
+
+      .progress-box {
+        margin-top: 23px;
+
         background: rgba(255, 255, 255, 0.1);
-        padding: 20px;
+
+        padding: 15px;
+
+        border-radius: 16px;
+      }
+
+      .progress-top {
+        display: flex;
+        justify-content: space-between;
+
+        font-size: 11px;
+
+        margin-bottom: 8px;
+      }
+
+      .progress {
+        height: 8px;
+
+        background: rgba(255, 255, 255, 0.16);
+
         border-radius: 20px;
+
+        overflow: hidden;
+      }
+
+      .progress-bar {
+        height: 100%;
+        width: 0%;
+
+        background: white;
+
+        border-radius: 20px;
+
+        transition: width 1s cubic-bezier(0.22, 1, 0.36, 1);
+      }
+
+      /* =========================
+       TOTAL
+    ========================= */
+
+      .total-card {
+        margin-top: 25px;
+
+        padding: 24px;
+
+        border-radius: 23px;
+
+        background: linear-gradient(
+          135deg,
+          rgba(255, 255, 255, 0.2),
+          rgba(255, 255, 255, 0.08)
+        );
+
+        border: 1px solid rgba(255, 255, 255, 0.18);
+
         text-align: center;
-        margin-top: 20px;
-        backdrop-filter: blur(5px);
+
+        backdrop-filter: blur(10px);
+
+        box-shadow: 0 15px 30px rgba(30, 20, 100, 0.12);
+
+        transform: translateZ(0);
+      }
+
+      .total-label {
+        display: block;
+
+        font-size: 10px;
+
+        letter-spacing: 2px;
+
+        opacity: 0.75;
+
+        font-weight: 700;
       }
 
       .total-amount {
-        font-size: 2rem;
-        font-weight: 700;
-        margin-top: 5px;
         display: block;
+
+        margin: 7px 0;
+
+        font-size: 34px;
+
+        font-weight: 800;
+
+        letter-spacing: -1px;
+
+        text-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+
+        transition: 0.3s;
       }
+
+      .currency {
+        font-size: 11px;
+        opacity: 0.7;
+      }
+
+      /* =========================
+       HIDDEN RESULT
+    ========================= */
 
       #resultContainer {
         opacity: 0;
-        transform: scale(0.9);
+        transform: translateY(15px);
         transition: 0.5s;
       }
 
       #resultContainer.active {
         opacity: 1;
-        transform: scale(1);
+        transform: translateY(0);
+      }
+
+      /* =========================
+       MONEY ANIMATION
+    ========================= */
+
+      .money {
+        position: fixed;
+
+        font-size: 24px;
+
+        pointer-events: none;
+
+        z-index: 9999;
+
+        animation: moneyFly 1.2s ease-out forwards;
+      }
+
+      @keyframes moneyFly {
+        0% {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+        }
+
+        100% {
+          opacity: 0;
+          transform: translateY(-130px) translateX(var(--x)) rotate(20deg)
+            scale(1.5);
+        }
+      }
+
+      /* =========================
+       MOBILE
+    ========================= */
+
+      @media (max-width: 767px) {
+        body {
+          padding: 12px;
+          align-items: flex-start;
+        }
+
+        .wrapper {
+          grid-template-columns: 1fr;
+          margin: 10px 0;
+          border-radius: 25px;
+        }
+
+        .input-side,
+        .result-side {
+          padding: 27px;
+        }
+
+        .title {
+          font-size: 25px;
+        }
+
+        .form-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .full-row {
+          grid-column: span 1;
+        }
+
+        .result-side {
+          min-height: 450px;
+        }
+
+        .total-amount {
+          font-size: 29px;
+        }
+      }
+
+      @media (max-width: 420px) {
+        .input-side,
+        .result-side {
+          padding: 22px;
+        }
+
+        .form-grid {
+          gap: 13px;
+        }
+
+        .result-side {
+          min-height: 430px;
+        }
       }
     </style>
   </head>
+
   <body>
+    <div class="bubble bubble-1"></div>
+    <div class="bubble bubble-2"></div>
+    <div class="bubble bubble-3"></div>
+
     <div class="wrapper">
+      <!-- =========================
+         INPUT
+    ========================== -->
+
       <div class="input-side">
-        <h2>Tính lương</h2>
+        <div class="logo">💰</div>
+
+        <h1 class="title">Tính lương 💸</h1>
+
+        <p class="subtitle">
+          Nhập thông tin tháng làm việc và để Edulive tính toán tiền lương cho
+          bạn thật nhanh ✨
+        </p>
+
         <div class="form-grid">
           <div class="input-group full-row">
-            <label>Tháng làm việc</label>
-            <input type="month" id="monthPicker" />
+            <label>📅 Tháng làm việc</label>
+
+            <div class="input-wrapper">
+              <span class="input-icon">🗓️</span>
+
+              <input type="month" id="monthPicker" />
+            </div>
           </div>
+
           <div class="input-group">
-            <label>Lương hợp đồng</label>
-            <input type="number" id="contractSalary" value="5700000" />
+            <label>💼 Lương hợp đồng</label>
+
+            <div class="input-wrapper">
+              <span class="input-icon">📄</span>
+
+              <input type="number" id="contractSalary" value="5700000" />
+            </div>
           </div>
+
           <div class="input-group">
-            <label>Lương thực tế</label>
-            <input type="number" id="realSalary" value="8500000" />
+            <label>💵 Lương thực tế</label>
+
+            <div class="input-wrapper">
+              <span class="input-icon">💰</span>
+
+              <input type="number" id="realSalary" value="8500000" />
+            </div>
           </div>
+
           <div class="input-group">
-            <label>Ngày chuẩn</label>
-            <input type="number" id="workDays" readonly />
+            <label>📆 Ngày chuẩn</label>
+
+            <div class="input-wrapper">
+              <span class="input-icon">📊</span>
+
+              <input type="number" id="workDays" readonly />
+            </div>
           </div>
+
           <div class="input-group">
-            <label>Ngày nghỉ</label>
-            <input type="number" id="leaveDays" value="0" />
+            <label>🏖️ Ngày nghỉ</label>
+
+            <div class="input-wrapper">
+              <span class="input-icon">😴</span>
+
+              <input type="number" id="leaveDays" value="0" min="0" />
+            </div>
           </div>
         </div>
-        <button onclick="calculateSalary()">TÍNH LƯƠNG NGAY</button>
+
+        <button class="calculate-btn" onclick="calculateSalary()">
+          ✨ TÍNH LƯƠNG NGAY
+        </button>
       </div>
 
+      <!-- =========================
+         RESULT
+    ========================== -->
+
       <div class="result-side">
-        <div id="resultContainer">
-          <h3 style="margin-top: 0">Tóm tắt lương</h3>
-          <div class="res-row">
-            <span class="res-label">Công thực tế</span>
-            <span class="res-value" id="resDays">0/0</span>
-          </div>
-          <div class="res-row">
-            <span class="res-label">Lương trước thuế</span>
-            <span class="res-value" id="resGross">0</span>
-          </div>
-          <div class="res-row">
-            <span class="res-label">Bảo hiểm (10.5%)</span>
-            <span class="res-value" id="resIns">0</span>
+        <div class="result-content" id="resultContainer">
+          <div class="result-header">
+            <h2 class="result-title">Tóm tắt lương</h2>
+
+            <div class="happy">🤑</div>
           </div>
 
+          <div class="res-row">
+            <div class="res-icon">🗓️</div>
+
+            <div class="res-info">
+              <span class="res-label"> Công thực tế </span>
+
+              <span class="res-value" id="resDays"> 0/0 ngày </span>
+            </div>
+          </div>
+
+          <div class="res-row">
+            <div class="res-icon">💰</div>
+
+            <div class="res-info">
+              <span class="res-label"> Lương trước thuế </span>
+
+              <span class="res-value" id="resGross"> 0 </span>
+            </div>
+          </div>
+
+          <div class="res-row">
+            <div class="res-icon">🛡️</div>
+
+            <div class="res-info">
+              <span class="res-label"> Bảo hiểm 10.5% </span>
+
+              <span class="res-value" id="resIns"> 0 </span>
+            </div>
+          </div>
+
+          <!-- PROGRESS -->
+
+          <div class="progress-box">
+            <div class="progress-top">
+              <span> 📈 Tiến độ ngày công </span>
+
+              <span id="progressText"> 0% </span>
+            </div>
+
+            <div class="progress">
+              <div class="progress-bar" id="progressBar"></div>
+            </div>
+          </div>
+
+          <!-- TOTAL -->
+
           <div class="total-card">
-            <span style="font-size: 0.8rem; letter-spacing: 2px"
-              >THỰC NHẬN</span
-            >
-            <span class="total-amount" id="resNet">0</span>
-            <span style="font-size: 0.8rem">VND</span>
+            <span class="total-label"> THỰC NHẬN </span>
+
+            <span class="total-amount" id="resNet"> 0 </span>
+
+            <span class="currency"> VND </span>
           </div>
         </div>
       </div>
@@ -249,62 +862,214 @@
     <script>
       const insRate = 10.5;
 
+      /* =========================
+       TÍNH NGÀY LÀM VIỆC
+       Thứ 2 → Thứ 6
+    ========================== */
+
       function getWorkDays(y, m) {
-        let d = new Date(y, m, 1),
-          count = 0;
+        let d = new Date(y, m, 1);
+
+        let count = 0;
+
         while (d.getMonth() === m) {
-          if (d.getDay() >= 1 && d.getDay() <= 5) count++;
+          if (d.getDay() >= 1 && d.getDay() <= 5) {
+            count++;
+          }
+
           d.setDate(d.getDate() + 1);
         }
+
         return count;
       }
 
+      /* =========================
+       UPDATE NGÀY
+    ========================== */
+
       function updateDays() {
         const val = document.getElementById("monthPicker").value;
+
         if (!val) return;
+
         const [y, m] = val.split("-").map(Number);
-        document.getElementById("workDays").value = getWorkDays(y, m - 1);
+
+        const days = getWorkDays(y, m - 1);
+
+        document.getElementById("workDays").value = days;
       }
 
-      window.onload = () => {
-        const n = new Date();
-        document.getElementById("monthPicker").value =
-          `${n.getFullYear()}-${String(n.getMonth() + 1).padStart(2, "0")}`;
-        updateDays();
-      };
+      /* =========================
+       FORMAT TIỀN
+    ========================== */
 
-      document.getElementById("monthPicker").onchange = updateDays;
+      function formatMoney(value) {
+        return Math.round(value).toLocaleString("vi-VN");
+      }
+
+      /* =========================
+       MONEY ANIMATION
+    ========================== */
+
+      function createMoney() {
+        const emojis = ["💵", "💰", "🤑", "💸", "✨"];
+
+        for (let i = 0; i < 10; i++) {
+          const money = document.createElement("div");
+
+          money.className = "money";
+
+          money.innerText = emojis[Math.floor(Math.random() * emojis.length)];
+
+          money.style.left = 45 + Math.random() * 10 + "%";
+
+          money.style.top = 45 + Math.random() * 10 + "%";
+
+          money.style.setProperty("--x", Math.random() * 160 - 80 + "px");
+
+          money.style.animationDelay = i * 0.06 + "s";
+
+          document.body.appendChild(money);
+
+          setTimeout(() => {
+            money.remove();
+          }, 1500);
+        }
+      }
+
+      /* =========================
+       ANIMATE NUMBER
+    ========================== */
+
+      function animateNumber(element, target) {
+        const duration = 800;
+
+        const start = 0;
+
+        const startTime = performance.now();
+
+        function update(currentTime) {
+          const progress = Math.min((currentTime - startTime) / duration, 1);
+
+          const ease = 1 - Math.pow(1 - progress, 3);
+
+          const value = start + (target - start) * ease;
+
+          element.innerText = formatMoney(value);
+
+          if (progress < 1) {
+            requestAnimationFrame(update);
+          } else {
+            element.innerText = formatMoney(target);
+          }
+        }
+
+        requestAnimationFrame(update);
+      }
+
+      /* =========================
+       CALCULATE
+    ========================== */
 
       function calculateSalary() {
-        const contract = +document.getElementById("contractSalary").value;
-        const real = +document.getElementById("realSalary").value;
-        const totalD = +document.getElementById("workDays").value;
-        const off = +document.getElementById("leaveDays").value;
+        const contract = Number(
+          document.getElementById("contractSalary").value,
+        );
 
-        if (off > totalD) {
-          alert("Dữ liệu ngày nghỉ sai!");
+        const real = Number(document.getElementById("realSalary").value);
+
+        const totalD = Number(document.getElementById("workDays").value);
+
+        const off = Number(document.getElementById("leaveDays").value);
+
+        if (!contract || !real || !totalD) {
+          alert("⚠️ Vui lòng nhập đầy đủ thông tin!");
+
+          return;
+        }
+
+        if (off < 0 || off > totalD) {
+          alert("😅 Số ngày nghỉ không hợp lệ!");
+
           return;
         }
 
         const actual = totalD - off;
+
         const salaryPerDay = real / totalD;
+
         const gross = salaryPerDay * actual;
+
         const ins = contract * (insRate / 100);
+
         const net = gross - ins;
 
-        // Cập nhật giao diện
+        /* =========================
+         UPDATE TEXT
+      ========================== */
+
         document.getElementById("resDays").innerText =
           `${actual}/${totalD} ngày`;
-        document.getElementById("resGross").innerText =
-          Math.round(gross).toLocaleString();
-        document.getElementById("resIns").innerText =
-          "-" + Math.round(ins).toLocaleString();
-        document.getElementById("resNet").innerText =
-          Math.round(net).toLocaleString();
 
-        // Hiệu ứng hiện kết quả
+        document.getElementById("resIns").innerText = "-" + formatMoney(ins);
+
+        animateNumber(document.getElementById("resGross"), gross);
+
+        animateNumber(document.getElementById("resNet"), net);
+
+        /* =========================
+         PROGRESS
+      ========================== */
+
+        const percent = Math.round((actual / totalD) * 100);
+
+        document.getElementById("progressText").innerText = percent + "%";
+
+        document.getElementById("progressBar").style.width = percent + "%";
+
+        /* =========================
+         SHOW RESULT
+      ========================== */
+
         document.getElementById("resultContainer").classList.add("active");
+
+        /* =========================
+         FUN EFFECT
+      ========================== */
+
+        createMoney();
+
+        /* đổi icon theo kết quả */
+
+        const happy = document.querySelector(".happy");
+
+        if (percent >= 100) {
+          happy.innerText = "🤩";
+        } else if (percent >= 80) {
+          happy.innerText = "😎";
+        } else if (percent >= 50) {
+          happy.innerText = "🙂";
+        } else {
+          happy.innerText = "🥲";
+        }
       }
+
+      /* =========================
+       INIT
+    ========================== */
+
+      window.onload = () => {
+        const now = new Date();
+
+        document.getElementById("monthPicker").value =
+          `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
+
+        updateDays();
+      };
+
+      document
+        .getElementById("monthPicker")
+        .addEventListener("change", updateDays);
     </script>
   </body>
 </html>
